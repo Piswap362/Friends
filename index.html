@@ -3,190 +3,375 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friend Referral - Pi Swap</title>
+    <title>Friends Referral - Pi Swap</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
+        :root {
+            --pi-primary: #1EC0C0;
+            --pi-secondary: #2ECC71;
+            --pi-accent: #F39C12;
+            --pi-dark: #1A3A4F;
+            --pi-light: #E8F4F8;
+            --text-light: #FFFFFF;
+            --text-dark: #2C3E50;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #6A0DAD;
-            color: white;
+            background-color: var(--pi-dark);
+            color: var(--text-light);
             text-align: center;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, var(--pi-dark) 0%, var(--pi-primary) 100%);
         }
-        .container {
+        
+        .scroll-container {
             max-width: 400px;
-            margin: auto;
+            margin: 0 auto;
             padding: 20px;
+            padding-bottom: 80px;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
-        .referral-box {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 10px 0;
-            text-align: center;
+        
+        h2 {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--pi-accent);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
-        .referral-box input {
-            width: 80%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 16px;
-            background: white;
-            color: #6A0DAD;
-        }
-        .referral-box button {
-            margin-top: 10px;
-            background-color: white;
-            color: #6A0DAD;
-            border: none;
-            padding: 8px 15px;
+        
+        .info-text {
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.8);
             font-size: 14px;
-            border-radius: 5px;
-            cursor: pointer;
         }
-        .popup {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #fff;
-            color: #6A0DAD;
-            padding: 10px 20px;
+        
+        .referral-section {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(30, 192, 192, 0.2);
+            backdrop-filter: blur(5px);
+        }
+        
+        .referral-link-container {
+            display: flex;
+            margin: 20px 0;
+            border: 1px solid var(--pi-primary);
             border-radius: 8px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        #referralLink {
+            flex: 1;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border: none;
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .copy-btn {
+            background: var(--pi-primary);
+            color: var(--pi-dark);
+            border: none;
+            padding: 0 15px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .copy-btn:hover {
+            background: var(--pi-accent);
+        }
+        
+        .copy-btn i {
+            font-size: 18px;
+        }
+        
+        .reward-info {
+            background: rgba(243, 156, 18, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .reward-info i {
+            color: var(--pi-accent);
+            font-size: 24px;
+        }
+        
+        .verify-btn {
+            background: linear-gradient(135deg, var(--pi-primary) 0%, var(--pi-accent) 100%);
+            color: var(--pi-dark);
+            border: none;
+            padding: 12px 20px;
             font-size: 16px;
-            display: none;
-            animation: fadeInOut 3s ease-in-out;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            width: 100%;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            box-sizing: border-box;
+            margin-top: 15px;
+            box-shadow: var(--shadow);
         }
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0; }
-            10%, 90% { opacity: 1; }
+        
+        .verify-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
+        
         .bottom-menu {
             position: fixed;
             bottom: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.2);
+            left: 0;
+            right: 0;
+            background: rgba(26, 58, 79, 0.9);
             display: flex;
             justify-content: space-around;
-            padding: 12px 0;
+            padding: 15px 0;
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(30, 192, 192, 0.3);
+            z-index: 1000;
+            max-width: 400px;
+            margin: 0 auto;
+            box-sizing: border-box;
         }
+        
         .menu-btn {
             background: none;
             border: none;
-            color: white;
-            font-size: 18px;
+            color: var(--text-light);
+            font-size: 16px;
             cursor: pointer;
             display: flex;
             align-items: center;
             flex-direction: column;
-            gap: 3px;
+            gap: 5px;
             text-decoration: none;
             position: relative;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: var(--transition);
+            opacity: 0.7;
+            flex: 1;
         }
+        
+        .menu-btn:hover {
+            opacity: 1;
+            background: rgba(30, 192, 192, 0.1);
+        }
+        
         .menu-btn i {
-            font-size: 22px;
+            font-size: 20px;
         }
+        
+        .menu-btn.active {
+            opacity: 1;
+            font-weight: 600;
+        }
+        
         .menu-btn.active::after {
             content: "";
             position: absolute;
-            bottom: -5px;
+            bottom: -8px;
             left: 50%;
             transform: translateX(-50%);
-            width: 40px;
+            width: 30px;
             height: 3px;
-            background-color: white;
+            background-color: var(--pi-accent);
             border-radius: 3px;
+        }
+        
+        /* Popup Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--pi-dark);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--pi-primary);
+            max-width: 300px;
+            width: 80%;
+            text-align: center;
+            box-shadow: var(--shadow);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-content i {
+            font-size: 40px;
+            color: var(--pi-accent);
+            margin-bottom: 15px;
+        }
+        
+        .modal-content p {
+            font-size: 16px;
+            margin: 15px 0;
+        }
+        
+        .close-modal {
+            background: linear-gradient(135deg, var(--pi-primary) 0%, var(--pi-accent) 100%);
+            color: var(--pi-dark);
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .close-modal:hover {
+            transform: translateY(-2px);
+        }
+        
+        .points-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .points-counter i {
+            color: var(--pi-accent);
+            margin-right: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Friend Referral</h2>
-        <p>Invite your friends and earn 20 points for each successful referral!</p>
-        
-        <div class="referral-box">
-            <p>Your Referral Link:</p>
-            <input type="text" id="referralLink" readonly>
-            <button onclick="copyToClipboard('referralLink', 'Referral link copied!')">Copy Link</button>
-        </div>
-
-        <div class="referral-box">
-            <p>Your Invite Code:</p>
-            <input type="text" id="inviteCode" readonly>
-            <button onclick="copyToClipboard('inviteCode', 'Invite code copied!')">Copy Code</button>
-        </div>
-
-        <div class="referral-box">
-            <p>Enter an Invite Code to Receive Points:</p>
-            <input type="text" id="enterCode">
-            <button onclick="submitCode()">Submit</button>
-        </div>
+    <div class="points-counter">
+        <i class="fas fa-coins"></i>
+        <span id="pointsDisplay">0</span> Pis
     </div>
 
+    <div class="scroll-container">
+        <div class="referral-section">
+            <h2>Invite Friends</h2>
+            <p class="info-text">Share your referral link with friends and earn rewards</p>
+            
+            <div class="reward-info">
+                <i class="fas fa-gift"></i>
+                <p>Earn 20 Pis for each friend who joins using your link</p>
+            </div>
+            
+            <div class="referral-link-container">
+                <input type="text" id="referralLink" readonly>
+                <button class="copy-btn" id="copyBtn" title="Copy to clipboard">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+            
+            <a href="https://piswap362.github.io/PiSwap_verify_friends/" class="verify-btn">
+                <i class="fas fa-check-circle"></i> Verify Friends
+            </a>
+        </div>
+    </div>
+    
     <div class="bottom-menu">
-        <a href="https://piswap362.github.io/Home/" class="menu-btn"><i class="fas fa-home"></i> Home</a>
-        <a href="https://piswap362.github.io/Tasks/" class="menu-btn"><i class="fas fa-tasks"></i> Tasks</a>
-        <a href="https://piswap362.github.io/Friends/" class="menu-btn active"><i class="fas fa-user-friends"></i> Friends</a>
-        <a href="https://piswap362.github.io/Wallet/" class="menu-btn"><i class="fas fa-wallet"></i> Wallet</a>
+        <a href="https://piswap362.github.io/PiSwap_Home/" class="menu-btn"><i class="fas fa-home"></i> Home</a>
+        <a href="https://piswap362.github.io/PiSwap_tasks/" class="menu-btn"><i class="fas fa-tasks"></i> Tasks</a>
+        <a href="https://piswap362.github.io/PiSwap_Friends/" class="menu-btn active"><i class="fas fa-user-friends"></i> Friends</a>
+        <a href="https://piswap362.github.io/PiSwap_Wallet/" class="menu-btn"><i class="fas fa-wallet"></i> Wallet</a>
     </div>
-
-    <div id="popup" class="popup"></div>
-
+    
+    <!-- Popup Modal -->
+    <div class="modal" id="referralModal">
+        <div class="modal-content">
+            <i class="fas fa-check-circle"></i>
+            <h3>Success!</h3>
+            <p id="modalMessage">Referral link copied to clipboard!</p>
+            <button class="close-modal" id="closeReferralModalBtn">OK</button>
+        </div>
+    </div>
+    
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        // Initialize points display
+        document.addEventListener("DOMContentLoaded", function() {
+            updatePointsDisplay();
+            generateReferralInfo();
+            setupCopyButton();
+        });
+
+        function updatePointsDisplay() {
+            let points = parseFloat(localStorage.getItem("pisPoints")) || 0;
+            document.getElementById("pointsDisplay").textContent = points;
+        }
+
+        function generateReferralInfo() {
             let userId = localStorage.getItem("userId");
             if (!userId) {
                 userId = generateUniqueId();
                 localStorage.setItem("userId", userId);
             }
-            let referralLink = "https://piswap?ref=" + userId;
-            let inviteCode = "INV-" + userId;
-
+            
+            let referralLink = "https://piswap362.github.io/PiSwap_Friends/?ref=" + userId;
             document.getElementById("referralLink").value = referralLink;
-            document.getElementById("inviteCode").value = inviteCode;
-        });
+        }
 
         function generateUniqueId() {
-            return Math.random().toString(36).substr(2, 9);
+            return 'user_' + Math.random().toString(36).substr(2, 9);
         }
 
-        function copyToClipboard(elementId, message) {
-            let copyText = document.getElementById(elementId);
-            copyText.select();
-            document.execCommand("copy");
-            showPopup(message);
-        }
-
-        function showPopup(message) {
-            let popup = document.getElementById("popup");
-            popup.innerText = message;
-            popup.style.display = "block";
-            setTimeout(() => {
-                popup.style.display = "none";
-            }, 3000);
-        }
-
-        function submitCode() {
-            let enteredCode = document.getElementById("enterCode").value;
-            let userId = localStorage.getItem("userId");
-
-            if (enteredCode === "" || enteredCode === "INV-" + userId) {
-                showPopup("Invalid code!");
-                return;
-            }
-
-            if (!localStorage.getItem("usedCode")) {
-                let points = parseInt(localStorage.getItem("walletPoints")) || 0;
-                points += 20;
-                localStorage.setItem("walletPoints", points);
-                localStorage.setItem("usedCode", enteredCode);
-                showPopup("20 points added to your wallet!");
-            } else {
-                showPopup("You have already used a referral code!");
-            }
+        function setupCopyButton() {
+            const copyBtn = document.getElementById("copyBtn");
+            const referralModal = document.getElementById("referralModal");
+            const closeReferralModalBtn = document.getElementById("closeReferralModalBtn");
+            
+            copyBtn.addEventListener("click", function() {
+                const referralLink = document.getElementById("referralLink");
+                referralLink.select();
+                document.execCommand("copy");
+                
+                const modalMessage = document.getElementById("modalMessage");
+                modalMessage.textContent = "Referral link copied to clipboard!";
+                referralModal.style.display = "flex";
+            });
+            
+            closeReferralModalBtn.addEventListener("click", function() {
+                referralModal.style.display = "none";
+            });
         }
     </script>
 </body>
